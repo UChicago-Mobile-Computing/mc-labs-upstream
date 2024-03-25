@@ -9,13 +9,13 @@ public class OculusSensorCapture : MonoBehaviour
 
     private StreamWriter logWriter;
     private bool isLogging = false;
-    
+
     private (string, string)[] activities = {("STD", "Standing"), ("SIT", "Sitting"),
-        ("JOG", "Jogging"), ("STR", "Arms stretching"), ("CHP", "Arms chopping"), 
+        ("JOG", "Jogging"), ("ARC", "Arm circles"), ("STR", "Arms stretching"), ("DRI", "Driving"),
         ("TWS", "Twisting")};
 
     private int curActivityIdx = 0;
-    
+
     private int curTrial = 0;
 
     private DateTime logStartTime;
@@ -28,7 +28,7 @@ public class OculusSensorCapture : MonoBehaviour
     {
         sensorReader = new OculusSensorReader();
     }
-    
+
     /// <summary>
     /// Get the filename prefix of a logged data file, based on the selected activity
     /// and group member.
@@ -46,10 +46,10 @@ public class OculusSensorCapture : MonoBehaviour
 
         string filename = $"{GetDataFilePrefix()}_{curTrial:D2}.csv";
         string path = Path.Combine(Application.persistentDataPath, filename);
-        
+
         logWriter = new StreamWriter(path);
         logWriter.WriteLine(GetLogHeader());
-        
+
         logStartTime = DateTime.UtcNow;
         hudStatusText.text = baseStatusText + "STATUS: Recording";
     }
@@ -64,7 +64,7 @@ public class OculusSensorCapture : MonoBehaviour
     /// Fetch the header of the CSV sensor log, based on the current tracked devices,
     /// available attributes, and dimensions of each attribute.
     /// </summary>
-    string GetLogHeader() 
+    string GetLogHeader()
     {
         string logHeader = "time,";
 
@@ -83,7 +83,7 @@ public class OculusSensorCapture : MonoBehaviour
         timerText.text = $"{timeDifference.TotalSeconds:F2} s";
 
         string logValue = $"{timeDifference.TotalMilliseconds},";
-        
+
         var attributes = sensorReader.GetSensorReadings();
         foreach (var attribute in attributes)
         {
@@ -121,7 +121,7 @@ public class OculusSensorCapture : MonoBehaviour
         // Check which buttons on the right controller are pressed on the current frame
         bool aButtonPressed = OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch);
         bool frontTriggerPressed = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
-        
+
         // bool sideTriggerPressed = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
 
         // Change selected activity, send a small vibration for feedback,
@@ -134,9 +134,9 @@ public class OculusSensorCapture : MonoBehaviour
         }
 
         // Change the wall UI text
-        wallStatusText.text = $"Activity: {activities[curActivityIdx].Item2}\n" + 
-            $"Last trial: {curTrial}"; 
-        
+        wallStatusText.text = $"Activity: {activities[curActivityIdx].Item2}\n" +
+            $"Last trial: {curTrial}";
+
         // Toggle logging on/off
         if (aButtonPressed)
         {
@@ -144,7 +144,8 @@ public class OculusSensorCapture : MonoBehaviour
             if (isLogging)
             {
                 StartLogging();
-            } else 
+            }
+            else
             {
                 StopLogging();
             }
@@ -158,7 +159,7 @@ public class OculusSensorCapture : MonoBehaviour
             LogAttributes();
         }
     }
-    
+
     /// <summary>
     /// Automatically close a log file if the app is closed while recording is in progress.
     /// Run when the scene is destroyed.
