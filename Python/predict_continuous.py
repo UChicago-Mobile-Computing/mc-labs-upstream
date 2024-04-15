@@ -17,7 +17,7 @@ Usage:
 """
 
 
-def predict_continuous(sensor_data: str):
+def predict_continuous(sensor_data_fp: str):
     """Run prediction on an sensor data sample, returning an array of labels
     for each 3-second sliding window in the file, using 1-second intervals.
 
@@ -34,7 +34,7 @@ def predict_continuous_folder(data_folder: str, output_folder: str):
     data_files = sorted(glob(f"{data_folder}/*.csv"))
     for file in data_files:
         filename = os.path.basename(file)[:-4]
-        file_labels = predict_continuous(data_files)
+        file_labels = predict_continuous(file)
 
         with open(f"{output_folder}/{filename}_labels.txt", "w+") as out:
             out.write("\n".join(file_labels))
