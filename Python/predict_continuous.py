@@ -9,10 +9,10 @@ labels on a 3-second sliding window in 1-second intervals.
 
 Usage:
     
-    python3 Python/predict_shallow.py <sensor .csv sample> \
+    python3 Python/predict_continuous.py <sensor .csv sample> \
         --output <output .txt file with labels for 3-second windows on each line>
 
-    python3 Python/predict_shallow.py --label_folder <folder with sensor .csv samples> \
+    python3 Python/predict_continuous.py --label_folder <folder with sensor .csv samples> \
         --output <output folder>
 """
 
